@@ -1,1 +1,2 @@
-distro/initramfz
+distro/
+**/target/
