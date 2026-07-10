@@ -1,11 +1,11 @@
 mod mounts;
 mod tty;
 
+use nix::sys::reboot::{self, reboot};
 use std::process::Command;
 use std::thread::sleep;
 use std::time::Duration;
 use std::{env, io};
-use nix::sys::reboot::{self, reboot};
 
 fn main() {
     mounts::mount_all_filesystems();
