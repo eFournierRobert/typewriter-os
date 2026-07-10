@@ -1,17 +1,22 @@
-use libc::{O_NOCTTY, O_RDWR, STDERR_FILENO, STDIN_FILENO, STDOUT_FILENO, close, dup2, fchmod, fchown, open, ioctl, cfmakeraw, termios, setsid, tcsetattr, getpgrp, reboot, LINUX_REBOOT_CMD_POWER_OFF};
-use std::env;
-use std::ffi::{c_char, CString};
+use libc::{
+    LINUX_REBOOT_CMD_POWER_OFF, O_RDWR, STDERR_FILENO, STDIN_FILENO, STDOUT_FILENO, close, dup2,
+    fchmod, fchown, ioctl, open, reboot, setsid,
+};
+use std::ffi::CString;
 use std::io::Error;
-use std::os::fd::AsRawFd;
-use std::process::{Command, exit};
-use nix::sys::termios::tcgetattr;
+use std::process::Command;
+use std::thread::sleep;
+use std::time::Duration;
+use std::{env, io};
 use sys_mount::{FilesystemType, Mount};
 
 fn main() {
     mount_all_filesystems();
     unsafe {
         println!("setting up environment variables");
-        set_env_vars();
+        if let Err(e) = set_env_vars() {
+            print_error_message("failed to set up environment variables", e);
+        }
 
         println!("opening tty1");
         setup_tty();
@@ -24,12 +29,16 @@ fn main() {
         .expect("failed to start shell");
     shell_process.wait();
 
-    unsafe {reboot(LINUX_REBOOT_CMD_POWER_OFF);}
+    unsafe {
+        reboot(LINUX_REBOOT_CMD_POWER_OFF);
+    }
 }
 
-unsafe fn set_env_vars() {
-    env::set_var("PATH", "/bin");
-    env::set_current_dir("/home/writer");
+unsafe fn set_env_vars() -> io::Result<()> {
+    unsafe {
+        env::set_var("PATH", "/bin");
+    }
+    env::set_current_dir("/home/writer")
 }
 
 fn mount_all_filesystems() {
@@ -62,8 +71,7 @@ fn was_mount_successful_check(res: Result<Mount, Error>) {
             );
         }
         Err(err) => {
-            eprintln!("failed to mount devtmpfs: {}", err);
-            exit(1);
+            print_error_message("failed to mount", err);
         }
     }
 }
@@ -71,17 +79,54 @@ fn was_mount_successful_check(res: Result<Mount, Error>) {
 unsafe fn setup_tty() {
     let tty = CString::new("/dev/tty1").unwrap();
 
-    assert!(setsid() >= 0, "setsid failed: {}", Error::last_os_error());
-    let tty_fd = open(tty.as_ptr(), O_RDWR);
-    if (tty_fd >= 0) {
-        assert!(ioctl(tty_fd, libc::TIOCSCTTY, 0) >= 0, "ioctl failed: {}", Error::last_os_error());
-        assert!(fchown(tty_fd, 0, 0) >= 0, "fchown failed: {}", Error::last_os_error());
-        assert!(fchmod(tty_fd, 0666) >= 0, "fchmod failed: {}", Error::last_os_error());
+    unsafe {
+        assert!(setsid() >= 0, "setsid failed: {}", Error::last_os_error());
+        let tty_fd = open(tty.as_ptr(), O_RDWR);
+        if (tty_fd >= 0) {
+            assert!(
+                ioctl(tty_fd, libc::TIOCSCTTY, 0) >= 0,
+                "ioctl failed: {}",
+                Error::last_os_error()
+            );
+            assert!(
+                fchown(tty_fd, 0, 0) >= 0,
+                "fchown failed: {}",
+                Error::last_os_error()
+            );
+            assert!(
+                fchmod(tty_fd, 0666) >= 0,
+                "fchmod failed: {}",
+                Error::last_os_error()
+            );
 
-        assert!(dup2(tty_fd, STDIN_FILENO) >= 0, "dup2 failed: {}", Error::last_os_error());
-        assert!(dup2(tty_fd, STDOUT_FILENO) >= 0, "dup2 failed: {}", Error::last_os_error());
-        assert!(dup2(tty_fd, STDERR_FILENO) >= 0, "dup2 failed: {}", Error::last_os_error());
+            assert!(
+                dup2(tty_fd, STDIN_FILENO) >= 0,
+                "dup2 failed: {}",
+                Error::last_os_error()
+            );
+            assert!(
+                dup2(tty_fd, STDOUT_FILENO) >= 0,
+                "dup2 failed: {}",
+                Error::last_os_error()
+            );
+            assert!(
+                dup2(tty_fd, STDERR_FILENO) >= 0,
+                "dup2 failed: {}",
+                Error::last_os_error()
+            );
 
-        assert!(close(tty_fd) >= 0, "close failed: {}", Error::last_os_error());
+            assert!(
+                close(tty_fd) >= 0,
+                "close failed: {}",
+                Error::last_os_error()
+            );
+        }
+    }
+}
+
+fn print_error_message(m: &str, e: Error) {
+    eprintln!("{} : {}", m, e);
+    loop {
+        sleep(Duration::from_secs(5));
     }
 }
