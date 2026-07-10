@@ -5,26 +5,20 @@ use std::{env, process::exit};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.contains(&String::from("help")) {
+    if args.len() < 2 || args.contains(&String::from("help")) {
         print_help();
         exit(1);
     }
 
     if let Some(folder) = args.get(1) {
-        match list::list(folder) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("Error listing folder {}: {}", folder, err);
-                exit(2);
-            }
+        if let Err(err) = list::list(folder) {
+            println!("Error listing folder {}: {}", folder, err);
+            exit(2);
         }
     } else {
-        match list::list(&String::new()) {
-            Ok(_) => {}
-            Err(err) => {
-                println!("Error listing current folder: {}", err);
-                exit(2);
-            }
+        if let Err(err) = list::list(&String::new()) {
+            println!("Error listing current folder: {}", err);
+            exit(2);
         }
     }
 }
