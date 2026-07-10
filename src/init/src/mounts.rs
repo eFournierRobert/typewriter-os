@@ -16,13 +16,13 @@ pub fn mount_all_filesystems() {
         .fstype(FilesystemType::from("tmpfs"))
         .mount("tmpfs", "/tmp");
 
-    was_mount_successful_check(dev_result);
-    was_mount_successful_check(proc_result);
-    was_mount_successful_check(sysfs_result);
-    was_mount_successful_check(tmpfs_result);
+    handle_mount_result(dev_result);
+    handle_mount_result(proc_result);
+    handle_mount_result(sysfs_result);
+    handle_mount_result(tmpfs_result);
 }
 
-pub fn was_mount_successful_check(res: Result<Mount, Error>) {
+fn handle_mount_result(res: Result<Mount, Error>) {
     match res {
         Ok(mount) => {
             println!(
@@ -32,7 +32,7 @@ pub fn was_mount_successful_check(res: Result<Mount, Error>) {
             );
         }
         Err(err) => {
-            print_error_message("failed to mount", err);
+            print_error_message("failed to mount", &err);
         }
     }
 }
