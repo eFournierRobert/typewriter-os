@@ -5,9 +5,7 @@ use std::process::Command;
 use std::thread::sleep;
 use std::time::Duration;
 use std::{env, io};
-use std::io::Error;
-use nix::sys::reboot;
-use nix::sys::reboot::reboot;
+use nix::sys::reboot::{self, reboot};
 
 fn main() {
     mounts::mount_all_filesystems();
@@ -16,11 +14,11 @@ fn main() {
         if let Err(e) = set_env_vars() {
             print_error_message("failed to set up environment variables", &e);
         }
+    }
 
-        println!("opening tty1");
-        if let Err(e) = tty::setup_tty() {
-            print_error_message("failed to init /dev/tty1", &e);
-        }
+    println!("opening tty1");
+    if let Err(e) = tty::setup_tty() {
+        print_error_message("failed to init /dev/tty1", &e);
     }
 
     println!("welcome to typewriter OS!");
@@ -40,7 +38,7 @@ unsafe fn set_env_vars() -> io::Result<()> {
     env::set_current_dir("/home/writer")
 }
 
-fn print_error_message(m: &str, e: &Error) {
+fn print_error_message(m: &str, e: &io::Error) {
     eprintln!("{} : {}", m, e);
     loop {
         sleep(Duration::from_secs(5));

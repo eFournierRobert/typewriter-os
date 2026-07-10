@@ -10,7 +10,7 @@ const TTY_PATH: &str = "/dev/tty1";
 const TTY_RIGHTS_MODE: Mode = Mode::from_bits_retain(0o666);
 const TTY_UID_GID: Option<u32> = Some(0);
 
-pub unsafe fn setup_tty() -> Result<(), Error>{
+pub fn setup_tty() -> Result<(), Error>{
     setsid()?;
 
     let tty_fd = open(TTY_PATH, OFlag::O_RDWR, TTY_RIGHTS_MODE)?;
