@@ -15,7 +15,11 @@ pub unsafe fn setup_tty() -> Result<(), Error>{
 
     let tty_fd = open(TTY_PATH, OFlag::O_RDWR, TTY_RIGHTS_MODE)?;
 
-    unsafe {ioctl(tty_fd.as_raw_fd(), libc::TIOCSCTTY, 0)};
+    unsafe {
+        if ioctl(tty_fd.as_raw_fd(), libc::TIOCSCTTY, 0) < 0 {
+            return Err(Error::last_os_error());
+        }
+    };
 
     fchown(&tty_fd, TTY_UID_GID, TTY_UID_GID)?;
 
