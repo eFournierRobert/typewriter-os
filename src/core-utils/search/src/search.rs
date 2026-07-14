@@ -31,7 +31,7 @@ pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), 
     }
 
     if line_indexes.len() == 0 {
-        return Ok(())
+        return Ok(());
     }
 
     for i in line_indexes {
@@ -52,7 +52,7 @@ pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), 
         }
 
         let mut bottom = i + padding as usize;
-        if bottom > content.len() - 1{
+        if bottom > content.len() - 1 {
             bottom = content.len() - 1;
         }
 
