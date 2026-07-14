@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "src/init",
+    "src/shell",
+    "src/core-utils/*",
+]
