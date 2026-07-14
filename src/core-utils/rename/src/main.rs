@@ -13,12 +13,9 @@ fn main() {
     if let Some(path) = args.get(1)
         && let Some(new_name) = args.get(2)
     {
-        match rename::rename(path, new_name) {
-            Ok(_) => {}
-            Err(err) => {
-                eprintln!("Error while renaming {}: {}", path, err);
-                exit(2);
-            }
+        if let Err(err) = rename::rename(path, new_name) {
+            eprintln!("Error while renaming {}: {}", path, err);
+            exit(2);
         }
     }
 }
