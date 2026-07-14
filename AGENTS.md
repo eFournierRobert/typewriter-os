@@ -2,7 +2,16 @@
 
 ## What this is
 
-A hand-rolled Linux OS written in Rust. Booted as an initramfs inside QEMU using the host kernel (`/boot/vmlinuz-linux`). No package manager, no system libraries — just musl-static binaries packed into a cpio archive.
+Typewriter OS — a Linux-based operating system with almost the entire userspace written from scratch in Rust. Booted as an initramfs inside QEMU using the host kernel (`/boot/vmlinuz-linux`). No package manager — just binaries packed into a cpio archive.
+
+## Agent role
+
+You assist with exactly two tasks:
+
+1. **Documentation** — Document functions and methods across the codebase.
+2. **Code & refactor suggestions** — Provide recommendations to improve code quality, structure, and idiomatic Rust.
+
+You must not write or modify code unless explicitly instructed to do so. The user handles all code writing; your role is to assist, suggest, and document.
 
 ## Build + run
 
