@@ -1,4 +1,5 @@
 use std::{
+    collections::VecDeque,
     fs::File,
     io::{self, BufRead},
     path::Path,
@@ -14,46 +15,43 @@ pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), Str
     let file = File::open(file_path).map_err(|e| e.to_string())?;
     let reader = io::BufReader::new(file);
 
-    let mut content = Vec::new();
-    let mut line_indexes = Vec::new();
+    let mut buffer: VecDeque<String> = VecDeque::new();
+    let mut last_match_at: Option<usize> = None;
 
     for (i, line) in reader.lines().enumerate() {
         let l = line.map_err(|e| e.to_string())?;
-        if l.contains(substring) {
-            line_indexes.push(i);
-        }
+        match last_match_at {
+            Some(j) => {
+                let bottom = j + padding;
+                if l.contains(substring) {
+                    last_match_at = Some(i);
+                }
 
-        content.push(l);
-    }
+                if bottom > i {
+                    println!("{}", l);
+                } else if bottom == i {
+                    println!("{}", l);
+                    last_match_at = None;
+                    buffer.clear();
+                }
+            }
+            None => {
+                if l.contains(substring) {
+                    last_match_at = Some(i);
 
-    if line_indexes.len() == 0 {
-        return Ok(());
-    }
+                    for top_l in &buffer {
+                        println!("{}", top_l)
+                    }
+                    println!("{}", l);
+                    continue;
+                }
 
-    for i in line_indexes {
-        if padding == 0 {
-            println!("{}", content.get(i).unwrap());
-            continue;
-        }
-
-        if i != 0 {
-            let top = if padding < i { i - padding } else { 0 };
-
-            for line in &content[top..i] {
-                println!("{}", line);
+                buffer.push_back(l);
+                if buffer.len() > padding {
+                    buffer.pop_front();
+                }
             }
         }
-
-        let mut bottom = i + padding;
-        if bottom > content.len() - 1 {
-            bottom = content.len() - 1;
-        }
-
-        for line in content[i..bottom].iter() {
-            println!("{}", line);
-        }
-
-        println!();
     }
 
     Ok(())
