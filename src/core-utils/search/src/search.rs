@@ -4,11 +4,7 @@ use std::{
     path::Path,
 };
 
-pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), String> {
-    if padding < 0 {
-        return Err(String::from("padding cannot be negative"));
-    }
-
+pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
     if !file_path.exists() || file_path.is_dir() {
@@ -41,17 +37,14 @@ pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), 
         }
 
         if i != 0 {
-            let mut top = i as i8 - padding;
-            if top < 0 {
-                top = 0;
-            }
+            let top = if padding < i { i - padding } else { 0 };
 
-            for line in content[top as usize..i].iter() {
+            for line in &content[top..i] {
                 println!("{}", line);
             }
         }
 
-        let mut bottom = i + padding as usize;
+        let mut bottom = i + padding;
         if bottom > content.len() - 1 {
             bottom = content.len() - 1;
         }

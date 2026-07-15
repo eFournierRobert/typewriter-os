@@ -14,17 +14,17 @@ fn main() {
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
         Err(err) => {
-            eprintln!("failed to parse aguments: {}", err);
-            exit(3);
+            eprintln!("failed to parse arguments: {}", err);
+            exit(2);
         }
     };
 
     if matches.opt_present("h") || matches.free.len() < 2 {
         print_help();
-        exit(2);
+        exit(1);
     }
 
-    let mut padding: i8 = 0;
+    let mut padding: usize = 0;
     if matches.opt_present("p") {
         padding = matches.opt_get("p").unwrap().unwrap();
     }
@@ -32,12 +32,9 @@ fn main() {
     let substring = matches.free.get(0).unwrap();
     let filename = matches.free.get(1).unwrap();
 
-    match search::search(padding, substring, filename) {
-        Ok(()) => {}
-        Err(e) => {
-            eprintln!("Error while searching {}: {}", filename, e);
-            exit(4);
-        }
+    if let Err(e) = search::search(padding, substring, filename) {
+        eprintln!("Error while searching {}: {}", filename, e);
+        exit(2);
     }
 }
 
