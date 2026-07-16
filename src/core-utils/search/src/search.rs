@@ -1,14 +1,12 @@
 use std::{
+    collections::VecDeque,
     fs::File,
     io::{self, BufRead},
     path::Path,
 };
 
-pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), String> {
-    if padding < 0 {
-        return Err(String::from("padding cannot be negative"));
-    }
-
+/// Searches for a substring in a file and prints matching lines with configurable context padding.
+pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
     if !file_path.exists() || file_path.is_dir() {
@@ -18,49 +16,43 @@ pub fn search(padding: i8, substring: &String, filename: &String) -> Result<(), 
     let file = File::open(file_path).map_err(|e| e.to_string())?;
     let reader = io::BufReader::new(file);
 
-    let mut content = Vec::new();
-    let mut line_indexes = Vec::new();
+    let mut buffer: VecDeque<String> = VecDeque::new();
+    let mut last_match_at: Option<usize> = None;
 
     for (i, line) in reader.lines().enumerate() {
         let l = line.map_err(|e| e.to_string())?;
-        if l.contains(substring) {
-            line_indexes.push(i);
-        }
+        match last_match_at {
+            Some(j) => {
+                let bottom = j + padding;
+                if l.contains(substring) {
+                    last_match_at = Some(i);
+                }
 
-        content.push(l);
-    }
-
-    if line_indexes.len() == 0 {
-        return Ok(())
-    }
-
-    for i in line_indexes {
-        if padding == 0 {
-            println!("{}", content.get(i).unwrap());
-            continue;
-        }
-
-        if i != 0 {
-            let mut top = i as i8 - padding;
-            if top < 0 {
-                top = 0;
+                if bottom > i {
+                    println!("{}", l);
+                } else if bottom == i {
+                    println!("{}", l);
+                    last_match_at = None;
+                    buffer.clear();
+                }
             }
+            None => {
+                if l.contains(substring) {
+                    last_match_at = Some(i);
 
-            for line in content[top as usize..i].iter() {
-                println!("{}", line);
+                    for top_l in &buffer {
+                        println!("{}", top_l)
+                    }
+                    println!("{}", l);
+                    continue;
+                }
+
+                buffer.push_back(l);
+                if buffer.len() > padding {
+                    buffer.pop_front();
+                }
             }
         }
-
-        let mut bottom = i + padding as usize;
-        if bottom > content.len() - 1{
-            bottom = content.len() - 1;
-        }
-
-        for line in content[i..bottom].iter() {
-            println!("{}", line);
-        }
-
-        println!();
     }
 
     Ok(())

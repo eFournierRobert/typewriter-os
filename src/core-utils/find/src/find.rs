@@ -1,6 +1,7 @@
 use std::{fs, path::Path};
 
-pub fn find(name: &String, folder_name: &String) -> Result<(), String> {
+/// Recursively searches for a file or folder by name within the given directory.
+pub fn find(name: &str, folder_name: &str) -> Result<(), String> {
     let folder_path = Path::new(folder_name);
 
     if !folder_path.exists() {
@@ -9,17 +10,15 @@ pub fn find(name: &String, folder_name: &String) -> Result<(), String> {
         return Err(format!("{} is a file", folder_name));
     }
 
-    let mut dir_entries: Vec<String> = Vec::new();
-
     for entry in fs::read_dir(folder_path).map_err(|e| e.to_string())? {
         let entry = entry.map_err(|e| e.to_string())?;
         let entry_name = entry
             .file_name()
             .into_string()
-            .map_err(|e| e.into_string().unwrap())?;
+            .map_err(|e| e.to_string_lossy().to_string())?;
 
         if entry_name.starts_with(".") {
-            continue
+            continue;
         }
 
         if entry_name == *name {
@@ -27,15 +26,9 @@ pub fn find(name: &String, folder_name: &String) -> Result<(), String> {
             return Ok(());
         }
 
-        let path = entry.path();
-
-        if path.is_dir() {
-            dir_entries.push(path.to_string_lossy().to_string());
+        if entry.path().is_dir() {
+            find(name, &entry.path().to_string_lossy().to_string())?;
         }
-    }
-
-    for entry in dir_entries {
-        find(name, &entry)?;
     }
 
     Ok(())

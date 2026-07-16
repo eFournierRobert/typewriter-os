@@ -1,4 +1,4 @@
-use std::{env, fs, process::exit};
+use std::{env, fs, path::Path, process::exit};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -9,11 +9,23 @@ fn main() {
     }
 
     if let Some(filename) = args.get(1) {
-        if let Err(err) = fs::File::create(filename) {
-            eprintln!("Error while creating {}: {}", filename, err);
-            exit(2);
-        }
+        create_file(filename);
     }
+}
+
+/// Creates an empty file with the given name. Exits on error.
+fn create_file(name: &str) {
+    if Path::new(name).exists() {
+        eprintln!("file {} already exists", name);
+        exit(4);
+    }
+
+    if let Err(err) = fs::File::create(name) {
+        eprintln!("Error while creating {}: {}", name, err);
+        exit(2);
+    }
+
+    println!("File {} was created!", name);
 }
 
 fn print_help() {
