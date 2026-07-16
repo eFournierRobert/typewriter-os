@@ -1,5 +1,6 @@
 use std::{env, path::Path};
 
+/// Lists all non-hidden entries in the given directory (or current dir if empty).
 pub fn list(dir: &str) -> Result<(), String> {
     let dir_path = if dir.is_empty() {
         env::current_dir().map_err(|e| e.to_string())?

@@ -1,5 +1,6 @@
 use std::{char, fs, path::Path};
 
+/// Renames a file or folder to a new name within the same parent directory.
 pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 

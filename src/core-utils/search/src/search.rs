@@ -5,6 +5,7 @@ use std::{
     path::Path,
 };
 
+/// Searches for a substring in a file and prints matching lines with configurable context padding.
 pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 

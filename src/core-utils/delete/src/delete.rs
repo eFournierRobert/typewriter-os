@@ -4,6 +4,7 @@ use std::{
     path::Path,
 };
 
+/// Deletes a file or folder after interactive confirmation from the user.
 pub fn delete(source: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 
@@ -24,6 +25,7 @@ pub fn delete(source: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Prompts the user for confirmation before deletion. Returns `true` if confirmed.
 fn ask_confirmation(source: &str) -> bool {
     print!("Are you sure you want to delete {} ? [y|N]: ", source);
     io::stdout().flush().unwrap();

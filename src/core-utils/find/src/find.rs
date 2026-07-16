@@ -1,5 +1,6 @@
 use std::{fs, path::Path};
 
+/// Recursively searches for a file or folder by name within the given directory.
 pub fn find(name: &str, folder_name: &str) -> Result<(), String> {
     let folder_path = Path::new(folder_name);
 

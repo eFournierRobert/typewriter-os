@@ -13,6 +13,7 @@ fn main() {
     }
 }
 
+/// Creates an empty file with the given name. Exits on error.
 fn create_file(name: &str) {
     if Path::new(name).exists() {
         eprintln!("file {} already exists", name);

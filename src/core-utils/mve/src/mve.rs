@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+/// Moves a file or folder from source to a destination directory.
 pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     let source_path = Path::new(source);
     let destination_path = Path::new(destination);
@@ -33,6 +34,7 @@ pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Checks whether the destination is valid (must exist and be a directory).
 fn is_destination_valid(destination: &Path) -> bool {
     destination.exists() && destination.is_dir()
 }

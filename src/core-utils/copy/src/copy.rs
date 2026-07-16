@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// Copies a file or folder recursively from source to destination.
 pub fn copy<S: AsRef<Path>, D: AsRef<Path>>(source: S, destination: D) -> Result<(), String> {
     let dest_path = destination.as_ref();
     let src_path = source.as_ref();
@@ -45,6 +46,7 @@ pub fn copy<S: AsRef<Path>, D: AsRef<Path>>(source: S, destination: D) -> Result
     Ok(())
 }
 
+/// Builds the actual destination path. If destination is a directory, appends the source's filename.
 fn build_dest_path(source: &Path, destination: &Path) -> PathBuf {
     if destination.is_dir() {
         let filename = source.file_name().expect("source has no filename");
@@ -54,6 +56,7 @@ fn build_dest_path(source: &Path, destination: &Path) -> PathBuf {
     destination.to_path_buf()
 }
 
+/// Checks whether the destination is valid: it must not be an existing file.
 fn is_destination_valid(destination: &Path) -> bool {
     if destination.exists() {
         return destination.is_dir();

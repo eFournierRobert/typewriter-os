@@ -4,6 +4,7 @@ use std::{
     path::Path,
 };
 
+/// Reads and prints the contents of a file line by line.
 pub fn show(filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
