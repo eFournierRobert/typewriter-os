@@ -17,7 +17,7 @@ pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     });
 
     if real_destination.exists() {
-        return Err(format!("{} already exist", real_destination.display()));
+        return Err(format!("{} already exists", real_destination.display()));
     }
 
     if source_path.is_dir() {

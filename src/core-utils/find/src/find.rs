@@ -14,7 +14,7 @@ pub fn find(name: &str, folder_name: &str) -> Result<(), String> {
         let entry_name = entry
             .file_name()
             .into_string()
-            .map_err(|e| e.into_string().unwrap())?;
+            .map_err(|e| e.to_string_lossy().to_string())?;
 
         if entry_name.starts_with(".") {
             continue;
