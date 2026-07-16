@@ -10,7 +10,8 @@ pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     if new_name.len() > 255 {
         return Err(String::from("new name is too long"));
     }
-    if !new_name.chars().all(char::is_alphabetic) || new_name.starts_with(".") {
+    if !new_name.chars().all(char::is_alphabetic) || new_name.starts_with(".") || new_name == "help"
+    {
         return Err(String::from("new name is an invalid file name"));
     }
 
