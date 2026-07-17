@@ -66,13 +66,13 @@ pub fn get_user_input(history: &mut History) -> Result<String, String> {
                 }
             }
             Key::Up => {
-                if let Some(c) = history.peak_prev_command() {
+                if let Some(c) = history.get_previous_command() {
                     user_input = c.chars().collect();
                     input_cursor_position = user_input.len();
                 }
             }
             Key::Down => {
-                if let Some(c) = history.peak_next_command() {
+                if let Some(c) = history.get_next_command() {
                     user_input = c.chars().collect();
                     input_cursor_position = user_input.len();
                 } else {

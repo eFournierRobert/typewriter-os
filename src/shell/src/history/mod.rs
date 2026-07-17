@@ -6,19 +6,17 @@ use std::path::Path;
 const HISTORY_FILE_PATH: &str = "/home/writer/.history";
 
 pub struct History {
-    size: usize,
     commands: Vec<String>,
     position_index: usize,
 }
 
 impl History {
-    pub fn append(&mut self, command: &String) {
+    pub fn append(&mut self, command: &str) {
         if self.commands.len() == 500 {
             self.commands.remove(0);
         }
 
-        self.commands.push(command.clone());
-        self.size = self.commands.len();
+        self.commands.push(command.to_string());
     }
 
     pub fn save(self) -> Result<(), String> {
@@ -34,14 +32,14 @@ impl History {
     }
 
     pub fn reset_index_position(&mut self) {
-        if self.size > 0 {
-            self.position_index = self.size;
+        if self.commands.len() > 0 {
+            self.position_index = self.commands.len();
         } else {
             self.position_index = 0;
         }
     }
 
-    pub fn peak_prev_command(&mut self) -> Option<&String> {
+    pub fn get_previous_command(&mut self) -> Option<&String> {
         if self.position_index == 0 {
             return None;
         }
@@ -52,8 +50,8 @@ impl History {
         c
     }
 
-    pub fn peak_next_command(&mut self) -> Option<&String> {
-        if self.position_index == self.size {
+    pub fn get_next_command(&mut self) -> Option<&String> {
+        if self.position_index == self.commands.len() {
             return None;
         }
 
@@ -66,18 +64,14 @@ impl History {
 
 pub fn new() -> History {
     let mut hist = History {
-        size: 0,
         commands: Vec::new(),
         position_index: 0,
     };
 
     if let Some(commands_history) = read_history() {
-        hist.size = commands_history.len();
         hist.commands = commands_history;
 
-        if hist.size > 0 {
-            hist.position_index = hist.size;
-        }
+        hist.reset_index_position();
     }
 
     hist
@@ -86,11 +80,12 @@ pub fn new() -> History {
 fn read_history() -> Option<Vec<String>> {
     let file_path = Path::new(HISTORY_FILE_PATH);
     if !file_path.exists() {
+        eprintln!("shell: can't load history. .history file does not exist");
         return None;
     }
 
     match fs::read_to_string(file_path) {
         Ok(content) => Some(content.lines().map(String::from).collect()),
-        Err(_) => return None,
+        Err(_) => None,
     }
 }
