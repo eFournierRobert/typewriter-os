@@ -3,17 +3,16 @@ mod tty;
 
 use nix::sys::reboot::{self, reboot};
 use std::process::Command;
-use std::thread::sleep;
-use std::time::Duration;
 use std::{env, io};
 
 fn main() {
-    mounts::mount_all_filesystems();
-    unsafe {
-        println!("setting up environment variables");
-        if let Err(e) = set_env_vars() {
-            print_error_message("failed to set up environment variables", &e);
-        }
+    if let Err(e) = mounts::mount_all_filesystems() {
+        print_error_message("failed to mount filesystems", &e);
+    }
+
+    println!("setting up environment variables");
+    if let Err(e) = set_env_vars() {
+        print_error_message("failed to set up environment variables", &e);
     }
 
     println!("opening tty1");
@@ -31,7 +30,7 @@ fn main() {
     let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
 }
 
-unsafe fn set_env_vars() -> io::Result<()> {
+fn set_env_vars() -> io::Result<()> {
     unsafe {
         env::set_var("PATH", "/bin");
     }
@@ -40,7 +39,4 @@ unsafe fn set_env_vars() -> io::Result<()> {
 
 fn print_error_message(m: &str, e: &io::Error) {
     eprintln!("{} : {}", m, e);
-    loop {
-        sleep(Duration::from_secs(5));
-    }
 }
