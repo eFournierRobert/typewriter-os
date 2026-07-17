@@ -1,38 +1,21 @@
-use crate::print_error_message;
+//! Mount essential virtual filesystems.
+
+use std::collections::HashMap;
 use std::io::Error;
 use sys_mount::{FilesystemType, Mount};
 
-pub fn mount_all_filesystems() {
-    let dev_result = Mount::builder()
-        .fstype(FilesystemType::from("devtmpfs"))
-        .mount("devtmpfs", "/dev");
-    let proc_result = Mount::builder()
-        .fstype(FilesystemType::from("proc"))
-        .mount("proc", "/proc");
-    let sysfs_result = Mount::builder()
-        .fstype(FilesystemType::from("sysfs"))
-        .mount("sysfs", "/sys");
-    let tmpfs_result = Mount::builder()
-        .fstype(FilesystemType::from("tmpfs"))
-        .mount("tmpfs", "/tmp");
+/// Mount `/dev`, `/proc`, `/sys`, and `/tmp`.
+pub fn mount_all_filesystems() -> Result<(), Error> {
+    let mut drives = HashMap::new();
+    drives.insert("devtmpfs", "/dev");
+    drives.insert("proc", "/proc");
+    drives.insert("sysfs", "/sys");
+    drives.insert("tmpfs", "/tmp");
 
-    handle_mount_result(dev_result);
-    handle_mount_result(proc_result);
-    handle_mount_result(sysfs_result);
-    handle_mount_result(tmpfs_result);
-}
-
-fn handle_mount_result(res: Result<Mount, Error>) {
-    match res {
-        Ok(mount) => {
-            println!(
-                "Mounted {} successfully {}",
-                mount.get_fstype(),
-                mount.target_path().to_string_lossy()
-            );
-        }
-        Err(err) => {
-            print_error_message("failed to mount", &err);
-        }
+    for (fs, dest) in drives {
+        let _ = Mount::builder()
+            .fstype(FilesystemType::from(fs))
+            .mount(fs, dest)?;
     }
+    Ok(())
 }
