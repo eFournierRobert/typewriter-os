@@ -1,3 +1,5 @@
+//! Set up `/dev/tty1` as the controlling terminal.
+
 use libc::ioctl;
 use nix::fcntl::{OFlag, open};
 use nix::sys::stat::Mode;
@@ -10,6 +12,7 @@ const TTY_PATH: &str = "/dev/tty1";
 const TTY_RIGHTS_MODE: Mode = Mode::from_bits_retain(0o666);
 const TTY_UID_GID: u32 = 0;
 
+/// Create a new session and attach `/dev/tty1` to stdin, stdout, and stderr.
 pub fn setup_tty() -> Result<(), Error> {
     setsid()?;
 

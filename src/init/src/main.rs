@@ -1,9 +1,13 @@
+//! PID 1 for Typewriter OS.
+
 mod mounts;
 mod tty;
 
 use nix::sys::reboot::{self, reboot};
 use std::process::Command;
 use std::{env, io};
+use std::thread::sleep;
+use std::time::Duration;
 
 fn main() {
     println!("Starting Typewriter OS\nPlease wait...");
@@ -30,6 +34,7 @@ fn main() {
     let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
 }
 
+/// Set `$PATH` and change working directory to `/home/writer`.
 fn set_env_vars() -> io::Result<()> {
     unsafe {
         env::set_var("PATH", "/bin");
@@ -37,7 +42,9 @@ fn set_env_vars() -> io::Result<()> {
     env::set_current_dir("/home/writer")
 }
 
+/// Print an error to stderr and power off the system.
 fn print_error_message(m: &str, e: &io::Error) {
     eprintln!("{} : {}", m, e);
+    sleep(Duration::from_secs(3));
     let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
 }

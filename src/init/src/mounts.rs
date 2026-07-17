@@ -1,7 +1,10 @@
+//! Mount essential virtual filesystems.
+
 use std::collections::HashMap;
 use std::io::Error;
 use sys_mount::{FilesystemType, Mount};
 
+/// Mount `/dev`, `/proc`, `/sys`, and `/tmp`.
 pub fn mount_all_filesystems() -> Result<(), Error> {
     let mut drives = HashMap::new();
     drives.insert("devtmpfs", "/dev");
