@@ -1,3 +1,5 @@
+//! In-memory command history with file persistence.
+
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -5,6 +7,7 @@ use std::path::Path;
 
 const HISTORY_FILE_PATH: &str = "/home/writer/.history";
 
+/// Keeps up to 500 commands with cursor-based navigation.
 pub struct History {
     commands: Vec<String>,
     position_index: usize,
@@ -19,6 +22,7 @@ impl History {
         self.commands.push(command.to_string());
     }
 
+    /// Persist commands to disk.
     pub fn save(self) -> Result<(), String> {
         let mut file = File::create(HISTORY_FILE_PATH)
             .map_err(|e| format!("Error while saving history: {}", e))?;
@@ -62,6 +66,7 @@ impl History {
     }
 }
 
+/// Create a new history loaded from disk, or empty if the file is missing.
 pub fn new() -> History {
     let mut hist = History {
         commands: Vec::new(),
