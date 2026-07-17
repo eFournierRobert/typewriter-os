@@ -6,21 +6,21 @@ use std::process::Command;
 use std::{env, io};
 
 fn main() {
+    println!("Starting Typewriter OS\nPlease wait...");
+
     if let Err(e) = mounts::mount_all_filesystems() {
         print_error_message("failed to mount filesystems", &e);
     }
 
-    println!("setting up environment variables");
     if let Err(e) = set_env_vars() {
         print_error_message("failed to set up environment variables", &e);
     }
 
-    println!("opening tty1");
     if let Err(e) = tty::setup_tty() {
         print_error_message("failed to init /dev/tty1", &e);
     }
 
-    println!("welcome to typewriter OS!");
+    println!("Welcome to typewriter OS!");
 
     let mut shell_process = Command::new("/bin/shell")
         .spawn()
@@ -39,4 +39,5 @@ fn set_env_vars() -> io::Result<()> {
 
 fn print_error_message(m: &str, e: &io::Error) {
     eprintln!("{} : {}", m, e);
+    let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
 }
