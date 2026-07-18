@@ -3,7 +3,7 @@ use std::path::Path;
 use std::process::Command;
 
 pub fn execute(input: &str) -> Result<(), String> {
-    let full_command = parse_input(&input);
+    let full_command = parse_input(input);
 
     match full_command[0].as_str() {
         "cd" => {
