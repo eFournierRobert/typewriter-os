@@ -14,7 +14,7 @@ const HISTORY_FILE_PATH: &str = "/home/writer/.history";
 pub struct History {
     commands: Vec<String>,
     position_index: usize,
-    max_history_size: usize
+    max_history_size: usize,
 }
 
 impl History {
@@ -75,7 +75,7 @@ pub fn new() -> History {
     let mut hist = History {
         commands: Vec::new(),
         position_index: 0,
-        max_history_size: 500
+        max_history_size: 500,
     };
 
     if let Some(commands_history) = read_history() {
