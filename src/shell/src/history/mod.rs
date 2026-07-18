@@ -1,5 +1,7 @@
 //! In-memory command history with file persistence.
 
+mod test;
+
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -11,11 +13,12 @@ const HISTORY_FILE_PATH: &str = "/home/writer/.history";
 pub struct History {
     commands: Vec<String>,
     position_index: usize,
+    max_history_size: usize
 }
 
 impl History {
     pub fn append(&mut self, command: &str) {
-        if self.commands.len() == 500 {
+        if self.commands.len() == self.max_history_size {
             self.commands.remove(0);
         }
 
@@ -71,6 +74,7 @@ pub fn new() -> History {
     let mut hist = History {
         commands: Vec::new(),
         position_index: 0,
+        max_history_size: 500
     };
 
     if let Some(commands_history) = read_history() {
