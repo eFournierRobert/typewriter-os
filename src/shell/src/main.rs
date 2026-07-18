@@ -12,7 +12,7 @@ fn main() {
                     history.append(&user_input);
                     history.reset_index_position();
 
-                    if user_input.eq("exit") {
+                    if user_input.eq("exit") || user_input.eq("poweroff") {
                         break;
                     }
 
