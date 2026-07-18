@@ -1,7 +1,11 @@
+//! Command parsing, built-in dispatch, and external binary execution.
+
 use std::env;
 use std::path::Path;
 use std::process::Command;
 
+/// Parse input and execute a command. Built-ins (`cd`, `help`) are handled inline;
+/// everything else spawns a child process.
 pub fn execute(input: &str) -> Result<(), String> {
     let full_command = parse_input(input);
 
@@ -37,11 +41,14 @@ pub fn execute(input: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Tokenize a shell command line.
+/// Splits on whitespace while preserving spaces inside single or double quotes.
+/// Quote characters themselves are stripped from the output.
 fn parse_input(input: &str) -> Vec<String> {
     enum State {
         Normal,
         SingleQuote,
-        DoubleQuote
+        DoubleQuote,
     }
     let mut input_vec = Vec::new();
     let mut current = String::new();
@@ -64,21 +71,21 @@ fn parse_input(input: &str) -> Vec<String> {
                 }
 
                 current.push(c);
-            },
+            }
             State::SingleQuote => {
                 if c == '\'' {
                     state = State::Normal;
                     continue;
                 }
                 current.push(c);
-            },
+            }
             State::DoubleQuote => {
                 if c == '\"' {
                     state = State::Normal;
                     continue;
                 }
                 current.push(c);
-            },
+            }
         }
     }
 
