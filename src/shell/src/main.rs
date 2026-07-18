@@ -8,7 +8,7 @@ fn main() {
     loop {
         match input::get_user_input(&mut history) {
             Ok(user_input) => {
-                if (user_input.len() > 0) {
+                if user_input.len() > 0 {
                     history.append(&user_input);
                     history.reset_index_position();
 

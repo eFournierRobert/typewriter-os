@@ -1,4 +1,4 @@
-use crate::history::History;
+use super::History;
 
 fn new_test_history(max: usize) -> History {
     History {

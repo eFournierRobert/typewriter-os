@@ -1,5 +1,6 @@
 //! In-memory command history with file persistence.
 
+#[cfg(test)]
 mod test;
 
 use std::fs;

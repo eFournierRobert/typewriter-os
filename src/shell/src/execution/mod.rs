@@ -1,5 +1,8 @@
 //! Command parsing, built-in dispatch, and external binary execution.
 
+#[cfg(test)]
+mod test;
+
 use std::env;
 use std::path::Path;
 use std::process::Command;
@@ -57,8 +60,10 @@ fn parse_input(input: &str) -> Vec<String> {
     for c in input.chars() {
         match state {
             State::Normal => {
-                if c.is_whitespace() && !current.is_empty() {
-                    input_vec.push(std::mem::take(&mut current));
+                if c.is_whitespace() {
+                    if !current.is_empty() {
+                        input_vec.push(std::mem::take(&mut current));
+                    }
                     continue;
                 }
 
