@@ -1,3 +1,5 @@
+//! Raw terminal input handling with cursor-based editing and history navigation.
+
 use crate::history::History;
 use std::{
     env,
@@ -8,6 +10,7 @@ use termion::{cursor::DetectCursorPos, event::Key, input::TermRead};
 
 const INPUT_ERROR_MESSAGE: &str = "failed to get user input";
 
+/// Build the prompt string from the current working directory.
 fn get_cursor() -> Result<String, String> {
     let current_dir = env::current_dir().map_err(|_| "failed to get current directory")?;
     let current_dir_string = current_dir.to_string_lossy().replace("/home/writer", "~");
@@ -15,6 +18,7 @@ fn get_cursor() -> Result<String, String> {
     Ok(format!("[{}]-> ", current_dir_string))
 }
 
+/// Read a line of user input with interactive keyboard editing.
 pub fn get_user_input(history: &mut History) -> Result<String, String> {
     let cursor = get_cursor()?;
     let mut stdout = stdout()
