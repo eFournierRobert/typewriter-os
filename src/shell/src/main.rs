@@ -8,11 +8,11 @@ fn main() {
     loop {
         match input::get_user_input(&mut history) {
             Ok(user_input) => {
-                if (user_input.len() > 0) {
+                if user_input.is_empty() {
                     history.append(&user_input);
                     history.reset_index_position();
 
-                    if user_input.eq("exit") {
+                    if user_input.eq("exit") || user_input.eq("poweroff") {
                         break;
                     }
 

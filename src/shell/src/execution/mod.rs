@@ -1,9 +1,16 @@
+//! Command parsing, built-in dispatch, and external binary execution.
+
+#[cfg(test)]
+mod test;
+
 use std::env;
 use std::path::Path;
 use std::process::Command;
 
+/// Parse input and execute a command. Built-ins (`cd`, `help`) are handled inline;
+/// everything else spawns a child process.
 pub fn execute(input: &str) -> Result<(), String> {
-    let full_command = parse_input(&input);
+    let full_command = parse_input(input);
 
     match full_command[0].as_str() {
         "cd" => {
@@ -17,7 +24,7 @@ pub fn execute(input: &str) -> Result<(), String> {
             print_help_screen();
         }
         _ => {
-            let mut child = Command::new(full_command.get(0).unwrap())
+            let mut child = Command::new(&full_command[0])
                 .args(full_command[1..].iter())
                 .spawn()
                 .map_err(|e| format!("failed to execute {}: {}", full_command[0], e))?;
@@ -28,7 +35,7 @@ pub fn execute(input: &str) -> Result<(), String> {
                 return Err(format!(
                     "{} exited with status {}",
                     full_command[0],
-                    e.code().unwrap()
+                    e.code().unwrap_or(-1)
                 ));
             }
         }
@@ -37,12 +44,65 @@ pub fn execute(input: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Tokenize a shell command line.
+/// Splits on whitespace while preserving spaces inside single or double quotes.
+/// Quote characters themselves are stripped from the output.
 fn parse_input(input: &str) -> Vec<String> {
-    input.split_whitespace().map(String::from).collect()
+    enum State {
+        Normal,
+        SingleQuote,
+        DoubleQuote,
+    }
+    let mut input_vec = Vec::new();
+    let mut current = String::new();
+    let mut state = State::Normal;
+
+    for c in input.chars() {
+        match state {
+            State::Normal => {
+                if c.is_whitespace() {
+                    if !current.is_empty() {
+                        input_vec.push(std::mem::take(&mut current));
+                    }
+                    continue;
+                }
+
+                if c == '\'' {
+                    state = State::SingleQuote;
+                    continue;
+                } else if c == '"' {
+                    state = State::DoubleQuote;
+                    continue;
+                }
+
+                current.push(c);
+            }
+            State::SingleQuote => {
+                if c == '\'' {
+                    state = State::Normal;
+                    continue;
+                }
+                current.push(c);
+            }
+            State::DoubleQuote => {
+                if c == '\"' {
+                    state = State::Normal;
+                    continue;
+                }
+                current.push(c);
+            }
+        }
+    }
+
+    if !current.is_empty() {
+        input_vec.push(current);
+    }
+
+    input_vec
 }
 
 fn change_dir(dest: &str) -> Result<(), String> {
-    Ok(env::set_current_dir(Path::new(dest)).map_err(|e| e.to_string())?)
+    env::set_current_dir(Path::new(dest)).map_err(|e| e.to_string())
 }
 
 fn print_help_screen() {
@@ -57,6 +117,7 @@ fn print_help_screen() {
         ("show", "Show the content of a file"),
         ("find", "Find a file or a folder inside a folder"),
         ("search", "Search for a string inside a file"),
+        ("cd", "Change folder"),
         ("vim", "Text editor"),
     ];
 
