@@ -118,7 +118,8 @@ fn print_help_screen() {
         ("find", "Find a file or a folder inside a folder"),
         ("search", "Search for a string inside a file"),
         ("cd", "Change folder"),
-        ("vim", "Text editor"),
+        ("tuitext", "Text editor"),
+        ("poweroff | exit", "Turn off the computer")
     ];
 
     println!("Shell help screen\n");

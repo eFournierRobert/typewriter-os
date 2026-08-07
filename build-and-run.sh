@@ -16,6 +16,7 @@ cp target/x86_64-unknown-linux-musl/release/new distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/rename distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/search distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/show distro/root/bin
+cp target/x86_64-unknown-linux-musl/release/TuiText distro/root/bin/tuitext
 
 # Create initramfs filesystem
 cd distro/root
