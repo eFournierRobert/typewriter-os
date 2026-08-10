@@ -12,7 +12,6 @@ pub fn mount_all_filesystems() -> Result<(), Error> {
     drives.push(("tmpfs", "/tmp"));
 
     for (fs, dest) in drives {
-        println!("mounting {}...", fs);
         let _ = Mount::builder()
             .fstype(FilesystemType::from(fs))
             .mount(fs, dest)?;
