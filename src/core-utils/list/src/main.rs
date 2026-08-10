@@ -5,7 +5,7 @@ use std::{env, process::exit};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 2 || args.contains(&String::from("help")) {
+    if args.contains(&String::from("help")) {
         print_help();
         exit(1);
     }
@@ -16,7 +16,7 @@ fn main() {
             exit(2);
         }
     } else {
-        if let Err(err) = list::list(&String::new()) {
+        if let Err(err) = list::list("") {
             println!("Error listing current folder: {}", err);
             exit(2);
         }
