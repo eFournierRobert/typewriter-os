@@ -4,6 +4,7 @@ mod mounts;
 mod tty;
 
 use nix::sys::reboot::{self, reboot};
+use nix::unistd::sync;
 use std::process::Command;
 use std::{env, io};
 use std::thread::sleep;
@@ -30,6 +31,8 @@ fn main() {
         .spawn()
         .expect("failed to start shell");
     let _ = shell_process.wait();
+
+    sync();
 
     let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
 }
