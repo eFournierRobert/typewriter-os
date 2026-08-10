@@ -19,7 +19,7 @@ pub fn list(dir: &str) -> Result<(), String> {
             None => continue,
         };
 
-        if entry_name.starts_with(".") {
+        if entry_name.starts_with(".") || entry_name == "lost+found" {
             continue;
         }
 
