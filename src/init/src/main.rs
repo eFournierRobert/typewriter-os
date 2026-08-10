@@ -3,7 +3,7 @@
 mod mounts;
 mod tty;
 
-use nix::sys::reboot::{self, reboot};
+use nix::sys::reboot::{reboot, RebootMode};
 use nix::unistd::sync;
 use std::process::Command;
 use std::{env, io};
@@ -30,11 +30,22 @@ fn main() {
     let mut shell_process = Command::new("/bin/shell")
         .spawn()
         .expect("failed to start shell");
-    let _ = shell_process.wait();
-
+    let shell_res = shell_process.wait();
+    
     sync();
 
-    let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
+    match shell_res {
+        Ok(status) => {
+            if status.success() {
+                let _ = reboot(RebootMode::RB_POWER_OFF);
+            } else if status.code().unwrap() == 1 {
+                let _ = reboot(RebootMode::RB_AUTOBOOT);
+            }
+        }
+        Err(e) => {
+            print_error_message("shell exited unexpectedly", &e);
+        }
+    }
 }
 
 /// Set `$PATH` and change working directory to `/home/writer`.
@@ -49,5 +60,5 @@ fn set_env_vars() -> io::Result<()> {
 fn print_error_message(m: &str, e: &io::Error) {
     eprintln!("{} : {}", m, e);
     sleep(Duration::from_secs(3));
-    let _ = reboot(reboot::RebootMode::RB_POWER_OFF);
+    let _ = reboot(RebootMode::RB_POWER_OFF);
 }

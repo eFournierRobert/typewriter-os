@@ -1,3 +1,5 @@
+use std::process::exit;
+
 mod execution;
 mod history;
 mod input;
@@ -13,7 +15,11 @@ fn main() {
                     history.reset_index_position();
 
                     if user_input.eq("exit") || user_input.eq("poweroff") {
+                        history.save().expect("error occurred while saving history");
                         break;
+                    } else if user_input.eq("reboot") {
+                        history.save().expect("error occurred while saving history");
+                        exit(1);
                     }
 
                     if let Err(e) = execution::execute(&user_input) {
@@ -26,6 +32,4 @@ fn main() {
             }
         }
     }
-
-    history.save().expect("error occurred while saving history");
 }

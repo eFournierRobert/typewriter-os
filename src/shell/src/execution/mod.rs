@@ -119,7 +119,8 @@ fn print_help_screen() {
         ("search", "Search for a string inside a file"),
         ("cd", "Change folder"),
         ("tuitext", "Text editor"),
-        ("poweroff | exit", "Turn off the computer")
+        ("poweroff | exit", "Turn off the computer"),
+        ("reboot", "Reboot the system")
     ];
 
     println!("Shell help screen\n");
