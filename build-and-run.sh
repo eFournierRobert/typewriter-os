@@ -30,6 +30,9 @@ find . | cpio -ov --format=newc | gzip -9 >../initramfz
 cd ../..
 
 # Run the initramfs
+if [ $1 = "none" ]; then
+    exit 0
+fi 
 if [ $1 = "term" ]; then
     qemu-system-x86_64 -kernel distro/vmlinuz-linux --nographic -append "console=ttyS0" -initrd distro/initramfz
 else
