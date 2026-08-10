@@ -2,3 +2,4 @@ distro/
 **/target/
 src/TuiText/
 src/linux/
+build/
