@@ -15,7 +15,8 @@ fn main() {
 
 /// Creates an empty file with the given name. Exits on error.
 fn create_file(name: &str) {
-    if Path::new(name).exists() {
+    let file_path = Path::new(name);
+    if file_path.exists() {
         eprintln!("file {} already exists", name);
         exit(4);
     }
@@ -25,10 +26,25 @@ fn create_file(name: &str) {
         exit(2);
     }
 
+    if !is_target_valid(file_path) {
+        let _ = fs::remove_file(file_path);
+        eprintln!("Cannot create file {}", name);
+        exit(3);
+    }
+
     println!("File {} was created!", name);
 }
 
 fn print_help() {
     println!("Usage: create <file name>");
     println!("Creates a file with the given name");
+}
+
+fn is_target_valid(p: &Path) -> bool {
+    let full_path = env::current_dir().unwrap().join(p);
+    if let Ok(resolved_path) = full_path.canonicalize() {
+        return resolved_path.starts_with("/home/writer")
+    }
+
+    false
 }
