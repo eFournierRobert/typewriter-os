@@ -1,16 +1,16 @@
-use std::{char, fs, path::Path};
+use std::{char, env, fs, path::Path};
 
 /// Renames a file or folder to a new name within the same parent directory.
 pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 
-    if !source_path.exists() {
+    if !is_target_valid(source_path) {
         return Err(format!("{} doesn't exist", source));
     }
     if new_name.len() > 255 {
         return Err(String::from("new name is too long"));
     }
-    if !new_name.chars().all(char::is_alphabetic) || new_name.starts_with(".") || new_name == "help"
+    if !new_name.chars().all(char::is_alphanumeric) || new_name.starts_with(".") || new_name == "help"
     {
         return Err(String::from("new name is an invalid file name"));
     }
@@ -27,4 +27,13 @@ pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn is_target_valid(p: &Path) -> bool {
+    let full_path = env::current_dir().unwrap().join(p);
+    if let Ok(resolved_path) = full_path.canonicalize() {
+        return resolved_path.starts_with("/home/writer")
+    }
+
+    false
 }

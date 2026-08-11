@@ -1,14 +1,12 @@
 use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    path::Path,
+    env, fs::File, io::{BufRead, BufReader}, path::Path
 };
 
 /// Reads and prints the contents of a file line by line.
 pub fn show(filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
-    if !file_path.exists() {
+    if !is_target_valid(file_path) {
         return Err(format!("doesn't exist"));
     }
 
@@ -25,4 +23,13 @@ pub fn show(filename: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn is_target_valid(p: &Path) -> bool {
+    let full_path = env::current_dir().unwrap().join(p);
+    if let Ok(resolved_path) = full_path.canonicalize() {
+        return resolved_path.starts_with("/home/writer")
+    }
+
+    false
 }

@@ -11,7 +11,7 @@ pub fn copy<S: AsRef<Path>, D: AsRef<Path>>(source: S, destination: D) -> Result
     }
 
     if !is_destination_valid(dest_path) {
-        return Err("destination is a file that already exists".to_string());
+        return Err("invalid destination".to_string());
     }
 
     if src_path.is_file() {
@@ -58,6 +58,10 @@ fn build_dest_path(source: &Path, destination: &Path) -> PathBuf {
 
 /// Checks whether the destination is valid: it must not be an existing file.
 fn is_destination_valid(destination: &Path) -> bool {
+    if !destination.starts_with("/home/writer") {
+        return false
+    }
+
     if destination.exists() {
         return destination.is_dir();
     }

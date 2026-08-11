@@ -1,14 +1,12 @@
 use std::{
-    fs,
-    io::{self, Write},
-    path::Path,
+    env, fs, io::{self, Write}, path::Path
 };
 
 /// Deletes a file or folder after interactive confirmation from the user.
 pub fn delete(source: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 
-    if !source_path.exists() {
+    if !is_source_valid(&source_path) {
         return Err(format!("{} doesn't exist", source));
     }
 
@@ -37,4 +35,13 @@ fn ask_confirmation(source: &str) -> bool {
     let user_answer = input.trim();
 
     user_answer == "y" || user_answer == "Y" || user_answer == "yes"
+}
+
+fn is_source_valid(p: &Path) -> bool {
+    let full_path = env::current_dir().unwrap().join(p);
+    if let Ok(resolved_path) = full_path.canonicalize() {
+        return resolved_path.starts_with("/home/writer")
+    }
+
+    false
 }
