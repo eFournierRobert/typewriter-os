@@ -7,6 +7,8 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
+const HOME_DIR_PATH: &str = "/home/writer";
+
 /// Parse input and execute a command. Built-ins (`cd`, `help`) are handled inline;
 /// everything else spawns a child process.
 pub fn execute(input: &str) -> Result<(), String> {
@@ -14,10 +16,17 @@ pub fn execute(input: &str) -> Result<(), String> {
 
     match full_command[0].as_str() {
         "cd" => {
-            if full_command.len() > 1 {
-                change_dir(&full_command[1])?;
-            } else {
-                change_dir("/home/writer")?;
+            let target = full_command
+                .get(1)
+                .cloned()
+                .unwrap_or_else(|| HOME_DIR_PATH.into());
+            if target.starts_with("/") && target != HOME_DIR_PATH {
+                change_dir(HOME_DIR_PATH)?;
+            }
+            change_dir(&target)?;
+
+            if !env::current_dir().unwrap().starts_with(HOME_DIR_PATH) {
+                change_dir(HOME_DIR_PATH)?;
             }
         }
         "help" => {
@@ -120,7 +129,7 @@ fn print_help_screen() {
         ("cd", "Change folder"),
         ("tuitext", "Text editor"),
         ("poweroff | exit", "Turn off the computer"),
-        ("reboot", "Reboot the system")
+        ("reboot", "Reboot the system"),
     ];
 
     println!("Shell help screen\n");

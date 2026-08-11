@@ -3,12 +3,12 @@
 mod mounts;
 mod tty;
 
-use nix::sys::reboot::{reboot, RebootMode};
+use nix::sys::reboot::{RebootMode, reboot};
 use nix::unistd::sync;
 use std::process::Command;
-use std::{env, io};
 use std::thread::sleep;
 use std::time::Duration;
+use std::{env, io};
 
 const SHELL_PATH: &str = "/bin/shell";
 
@@ -33,7 +33,7 @@ fn main() {
         .spawn()
         .expect("failed to start shell");
     let shell_res = shell_process.wait();
-    
+
     sync();
 
     match shell_res {
