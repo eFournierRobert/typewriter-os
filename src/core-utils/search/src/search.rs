@@ -1,6 +1,5 @@
 use std::{
     collections::VecDeque,
-    env,
     fs::File,
     io::{self, BufRead},
     path::Path,
@@ -10,7 +9,7 @@ use std::{
 pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
-    if !is_target_valid(file_path) || file_path.is_dir() {
+    if !jail_check::is_target_valid(file_path) || file_path.is_dir() {
         return Err(String::from("file doesn't exist or is a folder"));
     }
 
@@ -57,13 +56,4 @@ pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), Str
     }
 
     Ok(())
-}
-
-fn is_target_valid(p: &Path) -> bool {
-    let full_path = env::current_dir().unwrap().join(p);
-    if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer");
-    }
-
-    false
 }

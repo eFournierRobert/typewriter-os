@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 getopts = "0.2.24"
+jail_check = { path = "../jail_check" }

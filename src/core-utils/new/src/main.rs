@@ -15,7 +15,7 @@ fn main() {
         }
 
         let path = Path::new(name);
-        if !is_target_valid(path) {
+        if !jail_check::is_target_valid(path) {
             let _ = fs::remove_dir(path);
             eprintln!("Cannot create {}", name);
             exit(3);
@@ -26,13 +26,4 @@ fn main() {
 fn print_help() {
     println!("Usage: new <folder name>");
     println!("Creates a new folder with the given name");
-}
-
-fn is_target_valid(p: &Path) -> bool {
-    let full_path = env::current_dir().unwrap().join(p);
-    if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer");
-    }
-
-    false
 }

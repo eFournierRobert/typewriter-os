@@ -1,14 +1,14 @@
+use std::fs;
 use std::path::Path;
-use std::{env, fs};
 
 /// Moves a file or folder from source to a destination directory.
 pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     let source_path = Path::new(source);
     let destination_path = Path::new(destination);
 
-    if !is_target_valid(source_path) {
+    if !jail_check::is_target_valid(source_path) {
         return Err(format!("{} does not exist", source));
-    } else if !is_target_valid(destination_path) && destination_path.is_dir() {
+    } else if !jail_check::is_target_valid(destination_path) && destination_path.is_dir() {
         return Err(format!("{} is not a valid destination", destination));
     }
 
@@ -32,13 +32,4 @@ pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     }
 
     Ok(())
-}
-
-fn is_target_valid(p: &Path) -> bool {
-    let full_path = env::current_dir().unwrap().join(p);
-    if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer");
-    }
-
-    false
 }

@@ -8,7 +8,7 @@ pub fn list(dir: &str) -> Result<(), String> {
         Path::new(dir).to_path_buf()
     };
 
-    if !is_target_valid(&dir_path) {
+    if !jail_check::is_target_valid(&dir_path) {
         return Err(format!("{} doesn't exist", dir));
     }
 
@@ -33,13 +33,4 @@ pub fn list(dir: &str) -> Result<(), String> {
     }
 
     Ok(())
-}
-
-fn is_target_valid(p: &Path) -> bool {
-    let full_path = env::current_dir().unwrap().join(p);
-    if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer");
-    }
-
-    false
 }

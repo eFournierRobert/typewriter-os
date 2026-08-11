@@ -8,3 +8,4 @@ name = "move"
 path = "src/main.rs"
 
 [dependencies]
+jail_check = { path = "../jail_check" }

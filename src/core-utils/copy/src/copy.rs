@@ -10,7 +10,7 @@ pub fn copy<S: AsRef<Path>, D: AsRef<Path>>(source: S, destination: D) -> Result
         return Err("File or folder not found".to_string());
     }
 
-    if !is_destination_valid(dest_path) {
+    if !jail_check::is_target_valid(dest_path) {
         return Err("invalid destination".to_string());
     }
 
@@ -54,17 +54,4 @@ fn build_dest_path(source: &Path, destination: &Path) -> PathBuf {
     }
 
     destination.to_path_buf()
-}
-
-/// Checks whether the destination is valid: it must not be an existing file.
-fn is_destination_valid(destination: &Path) -> bool {
-    if !destination.starts_with("/home/writer") {
-        return false;
-    }
-
-    if destination.exists() {
-        return destination.is_dir();
-    }
-
-    true
 }

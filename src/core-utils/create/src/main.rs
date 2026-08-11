@@ -26,7 +26,7 @@ fn create_file(name: &str) {
         exit(2);
     }
 
-    if !is_target_valid(file_path) {
+    if !jail_check::is_target_valid(file_path) {
         let _ = fs::remove_file(file_path);
         eprintln!("Cannot create file {}", name);
         exit(3);
@@ -38,13 +38,4 @@ fn create_file(name: &str) {
 fn print_help() {
     println!("Usage: create <file name>");
     println!("Creates a file with the given name");
-}
-
-fn is_target_valid(p: &Path) -> bool {
-    let full_path = env::current_dir().unwrap().join(p);
-    if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer");
-    }
-
-    false
 }

@@ -22,6 +22,7 @@ pub fn execute(input: &str) -> Result<(), String> {
                 .unwrap_or_else(|| HOME_DIR_PATH.into());
             if target.starts_with("/") && target != HOME_DIR_PATH {
                 change_dir(HOME_DIR_PATH)?;
+                return Ok(());
             }
             change_dir(&target)?;
 
