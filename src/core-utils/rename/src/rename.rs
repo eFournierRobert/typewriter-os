@@ -10,7 +10,9 @@ pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     if new_name.len() > 255 {
         return Err(String::from("new name is too long"));
     }
-    if !new_name.chars().all(char::is_alphanumeric) || new_name.starts_with(".") || new_name == "help"
+    if !new_name.chars().all(char::is_alphanumeric)
+        || new_name.starts_with(".")
+        || new_name == "help"
     {
         return Err(String::from("new name is an invalid file name"));
     }
@@ -32,7 +34,7 @@ pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
 fn is_target_valid(p: &Path) -> bool {
     let full_path = env::current_dir().unwrap().join(p);
     if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer")
+        return resolved_path.starts_with("/home/writer");
     }
 
     false

@@ -43,7 +43,7 @@ fn print_help() {
 fn is_target_valid(p: &Path) -> bool {
     let full_path = env::current_dir().unwrap().join(p);
     if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer")
+        return resolved_path.starts_with("/home/writer");
     }
 
     false

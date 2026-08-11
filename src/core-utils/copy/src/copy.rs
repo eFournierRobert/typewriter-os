@@ -59,7 +59,7 @@ fn build_dest_path(source: &Path, destination: &Path) -> PathBuf {
 /// Checks whether the destination is valid: it must not be an existing file.
 fn is_destination_valid(destination: &Path) -> bool {
     if !destination.starts_with("/home/writer") {
-        return false
+        return false;
     }
 
     if destination.exists() {

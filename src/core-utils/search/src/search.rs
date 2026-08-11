@@ -1,5 +1,9 @@
 use std::{
-    collections::VecDeque, env, fs::File, io::{self, BufRead}, path::Path
+    collections::VecDeque,
+    env,
+    fs::File,
+    io::{self, BufRead},
+    path::Path,
 };
 
 /// Searches for a substring in a file and prints matching lines with configurable context padding.
@@ -58,7 +62,7 @@ pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), Str
 fn is_target_valid(p: &Path) -> bool {
     let full_path = env::current_dir().unwrap().join(p);
     if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer")
+        return resolved_path.starts_with("/home/writer");
     }
 
     false

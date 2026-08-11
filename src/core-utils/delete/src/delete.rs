@@ -1,5 +1,7 @@
 use std::{
-    env, fs, io::{self, Write}, path::Path
+    env, fs,
+    io::{self, Write},
+    path::Path,
 };
 
 /// Deletes a file or folder after interactive confirmation from the user.
@@ -40,7 +42,7 @@ fn ask_confirmation(source: &str) -> bool {
 fn is_source_valid(p: &Path) -> bool {
     let full_path = env::current_dir().unwrap().join(p);
     if let Ok(resolved_path) = full_path.canonicalize() {
-        return resolved_path.starts_with("/home/writer")
+        return resolved_path.starts_with("/home/writer");
     }
 
     false
