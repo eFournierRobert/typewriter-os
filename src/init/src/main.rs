@@ -10,6 +10,8 @@ use std::{env, io};
 use std::thread::sleep;
 use std::time::Duration;
 
+const SHELL_PATH: &str = "/bin/shell";
+
 fn main() {
     println!("Starting Typewriter OS\nPlease wait...");
 
@@ -27,7 +29,7 @@ fn main() {
 
     println!("Welcome to typewriter OS!");
 
-    let mut shell_process = Command::new("/bin/shell")
+    let mut shell_process = Command::new(SHELL_PATH)
         .spawn()
         .expect("failed to start shell");
     let shell_res = shell_process.wait();
