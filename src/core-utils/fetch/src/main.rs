@@ -27,10 +27,11 @@ fn main() {
     );
     println!(
         "Disk: {} MB / {} MB",
-        used_disk.usage().total_written_bytes / B_TO_MB_DIVIDER,
+        (used_disk.total_space() - used_disk.available_space()) / B_TO_MB_DIVIDER,
         used_disk.total_space() / B_TO_MB_DIVIDER,
-    )
+    );
 }
+
 fn print_help() {
     println!("Usage: fetch");
     println!("Show system informations.");
