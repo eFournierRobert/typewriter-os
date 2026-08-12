@@ -34,7 +34,7 @@ Single Cargo workspace at root (`Cargo.toml`). Run `cargo build` from the repo r
 |---|---|
 | `src/init/` | PID 1 — mounts filesystems, sets env, spawns `/bin/shell`, then powers off (exit code 0) or reboots (exit code 1) based on shell exit status |
 | `src/shell/` | User-facing CLI shell (input loop, history, command dispatch) |
-| `src/core-utils/*/` | Individual binaries: `create`, `list`, `copy`, `delete`, `find`, `new`, `show`, `search`, `rename`, `mve` |
+| `src/core-utils/*/` | Individual binaries: `create`, `list`, `copy`, `delete`, `find`, `new`, `show`, `search`, `rename`, `mve`, `fetch` |
 | `src/core-utils/jail_check/` | Shared library — validates that paths resolve within `/home/writer` before operations are performed |
 
 The `mve` crate produces a binary named `move` (reserved keyword workaround via `[[bin]] name = "move"`).
