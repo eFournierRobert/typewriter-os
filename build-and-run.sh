@@ -1,9 +1,13 @@
 #!/bin/bash
 
+set -e
+
 # Build whole workspace
+echo "Compiling all Rust utils..."
 cargo build --release --target=x86_64-unknown-linux-musl
 
 # Copy binaries
+echo "Copying binaries into the install root..."
 cp target/x86_64-unknown-linux-musl/release/init distro/root/
 cp target/x86_64-unknown-linux-musl/release/shell distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/create distro/root/bin
@@ -21,11 +25,13 @@ cp target/x86_64-unknown-linux-musl/release/TuiText distro/root/bin/tuitext
 
 # Build and copy Linux kernel
 cd src/linux/linux-7.1.7
+echo "Compiling Linux kernel..."
 make -j$(nproc)
 cp arch/x86/boot/bzImage ../../../distro/vmlinuz-linux
 cd ../../..
 
 # Create initramfs filesystem
+echo "Building initramfs..."
 cd distro/root
 find . | cpio -ov --format=newc | gzip -9 >../initramfz
 cd ../..
