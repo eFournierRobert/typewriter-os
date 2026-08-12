@@ -6,9 +6,9 @@ pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     let source_path = Path::new(source);
     let destination_path = Path::new(destination);
 
-    if !source_path.exists() {
+    if !jail_check::is_target_valid(source_path) {
         return Err(format!("{} does not exist", source));
-    } else if !is_destination_valid(destination_path) {
+    } else if !jail_check::is_target_valid(destination_path) && destination_path.is_dir() {
         return Err(format!("{} is not a valid destination", destination));
     }
 
@@ -32,9 +32,4 @@ pub fn mve(source: &str, destination: &str) -> Result<(), String> {
     }
 
     Ok(())
-}
-
-/// Checks whether the destination is valid (must exist and be a directory).
-fn is_destination_valid(destination: &Path) -> bool {
-    destination.exists() && destination.is_dir()
 }

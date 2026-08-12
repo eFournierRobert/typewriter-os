@@ -32,9 +32,10 @@ Single Cargo workspace at root (`Cargo.toml`). Run `cargo build` from the repo r
 
 | Directory | Role |
 |---|---|
-| `src/init/` | PID 1 — mounts filesystems, sets env, spawns `/bin/shell`, then powers off |
+| `src/init/` | PID 1 — mounts filesystems, sets env, spawns `/bin/shell`, then powers off (exit code 0) or reboots (exit code 1) based on shell exit status |
 | `src/shell/` | User-facing CLI shell (input loop, history, command dispatch) |
 | `src/core-utils/*/` | Individual binaries: `create`, `list`, `copy`, `delete`, `find`, `new`, `show`, `search`, `rename`, `mve` |
+| `src/core-utils/jail_check/` | Shared library — validates that paths resolve within `/home/writer` before operations are performed |
 
 The `mve` crate produces a binary named `move` (reserved keyword workaround via `[[bin]] name = "move"`).
 
@@ -45,3 +46,6 @@ The `mve` crate produces a binary named `move` (reserved keyword workaround via 
 - `distro/` is gitignored — never commit built artifacts.
 - QEMU uses the host's kernel; it must exist at `/boot/vmlinuz-linux`.
 - The init process sets `PATH=/bin` and cwd to `/home/writer`. All binaries live in `/bin`.
+- **Jail enforcement:** Core utilities must validate paths via `jail_check::is_target_valid` before operating. This ensures all file operations stay within `/home/writer`, preventing access outside the permitted directory tree.
+- **Reboot support:** The shell exits with code 0 for poweroff (`exit` / `poweroff`) and code 1 for reboot (`reboot`). Init reads this status to decide whether to call `RB_POWER_OFF` or `RB_AUTOBOOT`.
+- **Persistent storage:** Both QEMU modes (GUI and term) attach `distro/datadisk.img` as a raw drive, mounted at `/home/writer` by init.

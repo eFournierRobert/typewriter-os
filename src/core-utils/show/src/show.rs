@@ -8,7 +8,7 @@ use std::{
 pub fn show(filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
-    if !file_path.exists() {
+    if !jail_check::is_target_valid(file_path) {
         return Err(format!("doesn't exist"));
     }
 

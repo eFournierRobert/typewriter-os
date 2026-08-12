@@ -4,7 +4,7 @@ use std::{fs, path::Path};
 pub fn find(name: &str, folder_name: &str) -> Result<(), String> {
     let folder_path = Path::new(folder_name);
 
-    if !folder_path.exists() {
+    if !jail_check::is_target_valid(folder_path) {
         return Err(format!("{} does not exist", folder_name));
     } else if folder_path.is_file() {
         return Err(format!("{} is a file", folder_name));

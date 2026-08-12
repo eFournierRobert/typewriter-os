@@ -8,7 +8,7 @@ pub fn list(dir: &str) -> Result<(), String> {
         Path::new(dir).to_path_buf()
     };
 
-    if !dir_path.exists() {
+    if !jail_check::is_target_valid(&dir_path) {
         return Err(format!("{} doesn't exist", dir));
     }
 
@@ -19,7 +19,7 @@ pub fn list(dir: &str) -> Result<(), String> {
             None => continue,
         };
 
-        if entry_name.starts_with(".") {
+        if entry_name.starts_with(".") || entry_name == "lost+found" {
             continue;
         }
 

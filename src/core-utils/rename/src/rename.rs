@@ -4,13 +4,15 @@ use std::{char, fs, path::Path};
 pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 
-    if !source_path.exists() {
+    if !jail_check::is_target_valid(source_path) {
         return Err(format!("{} doesn't exist", source));
     }
     if new_name.len() > 255 {
         return Err(String::from("new name is too long"));
     }
-    if !new_name.chars().all(char::is_alphabetic) || new_name.starts_with(".") || new_name == "help"
+    if !new_name.chars().all(char::is_alphanumeric)
+        || new_name.starts_with(".")
+        || new_name == "help"
     {
         return Err(String::from("new name is an invalid file name"));
     }
@@ -19,7 +21,7 @@ pub fn rename(source: &str, new_name: &str) -> Result<(), String> {
     let renamed_path = parent_path.join(new_name);
 
     if renamed_path.exists() {
-        return Err(format!("{} already exist", renamed_path.display()));
+        return Err(format!("{} already exists", renamed_path.display()));
     }
 
     if let Err(err) = fs::rename(source_path, renamed_path) {

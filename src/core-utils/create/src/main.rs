@@ -15,7 +15,8 @@ fn main() {
 
 /// Creates an empty file with the given name. Exits on error.
 fn create_file(name: &str) {
-    if Path::new(name).exists() {
+    let file_path = Path::new(name);
+    if file_path.exists() {
         eprintln!("file {} already exists", name);
         exit(4);
     }
@@ -23,6 +24,12 @@ fn create_file(name: &str) {
     if let Err(err) = fs::File::create(name) {
         eprintln!("Error while creating {}: {}", name, err);
         exit(2);
+    }
+
+    if !jail_check::is_target_valid(file_path) {
+        let _ = fs::remove_file(file_path);
+        eprintln!("Cannot create file {}", name);
+        exit(3);
     }
 
     println!("File {} was created!", name);

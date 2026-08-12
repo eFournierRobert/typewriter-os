@@ -86,14 +86,23 @@ dependencies = [
 [[package]]
 name = "copy"
 version = "1.0.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "create"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "delete"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "either"
@@ -114,6 +123,9 @@ dependencies = [
 [[package]]
 name = "find"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "getopts"
@@ -149,6 +161,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "jail_check"
+version = "0.1.0"
+
+[[package]]
 name = "libc"
 version = "0.2.186"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -167,6 +183,9 @@ dependencies = [
 [[package]]
 name = "list"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "log"
@@ -200,10 +219,16 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 [[package]]
 name = "mve"
 version = "1.0.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "new"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "nix"
@@ -326,6 +351,9 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 [[package]]
 name = "rename"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "rustc-hash"
@@ -338,6 +366,7 @@ name = "search"
 version = "0.1.0"
 dependencies = [
  "getopts",
+ "jail_check",
 ]
 
 [[package]]
@@ -356,6 +385,9 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 [[package]]
 name = "show"
 version = "0.1.0"
+dependencies = [
+ "jail_check",
+]
 
 [[package]]
 name = "smart-default"

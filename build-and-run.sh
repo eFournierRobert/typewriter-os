@@ -34,7 +34,7 @@ if [ $1 = "none" ]; then
     exit 0
 fi 
 if [ $1 = "term" ]; then
-    qemu-system-x86_64 -kernel distro/vmlinuz-linux --nographic -append "console=ttyS0" -initrd distro/initramfz
+    qemu-system-x86_64 -kernel distro/vmlinuz-linux --nographic -append "console=ttyS0" -initrd distro/initramfz -drive file=distro/datadisk.img,format=raw
 else
     qemu-system-x86_64 -kernel distro/vmlinuz-linux -initrd distro/initramfz -drive file=distro/datadisk.img,format=raw
 fi

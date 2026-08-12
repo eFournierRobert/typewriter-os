@@ -9,7 +9,7 @@ use std::{
 pub fn search(padding: usize, substring: &str, filename: &str) -> Result<(), String> {
     let file_path = Path::new(filename);
 
-    if !file_path.exists() || file_path.is_dir() {
+    if !jail_check::is_target_valid(file_path) || file_path.is_dir() {
         return Err(String::from("file doesn't exist or is a folder"));
     }
 

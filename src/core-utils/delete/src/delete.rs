@@ -8,7 +8,7 @@ use std::{
 pub fn delete(source: &str) -> Result<(), String> {
     let source_path = Path::new(source);
 
-    if !source_path.exists() {
+    if !jail_check::is_target_valid(&source_path) {
         return Err(format!("{} doesn't exist", source));
     }
 
