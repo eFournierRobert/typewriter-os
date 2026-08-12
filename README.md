@@ -1,10 +1,10 @@
 # Typewriter OS
 
-Typewriter OS is an embedded Linux distribution with userspace built from scratch in Rust. It was made
+Typewriter OS is an embedded Linux distribution with a userspace built from scratch in musl Rust. It was made
 to run in x86_64 UEFI QEMU.
 
-The userspace is a CLI that allows for persistent CRUD actions on files and directories. The user is jailed
-inside the persistent directory.
+The OS was made for simple file editing and CRUD actions on them. This allows it to be
+a small, purpose-built, CLI typing machine.
 
 ## Core userspace programs
 Here's a list of core userspace programs part of the OS :
@@ -31,17 +31,17 @@ The repository has some scripts to initialize, build and launch the image for yo
 - A Linux system
 - xz
 - git
-- cargo/rust
+- cargo
 - make
 - gzip
 - cpio
 - x86_64 QEMU with a UEFI firmware
 - grub
 
-Here's a one line to initialize, build and launch the production image.
+Here's a one liner to initialize, build and launch the production image.
 > [!WARNING]
-> This action will compile an x86_64 Linux kernel from scratch so this might 
-> take a bit of time and use a lot of CPU.
+> **This action will compile an x86_64 Linux kernel from scratch so this might 
+> take a bit of time and use a lot of CPU.**
 ```bash
 ./init.sh && ./prod-build.sh && ./launch-prod-img.sh
 ```

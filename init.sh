@@ -22,7 +22,19 @@ cd ../..
 echo "Building root directory tree..."
 mkdir -p distro/root
 cd distro/root
-mkdir bin boot dev etc home proc sys tmp
-mkdir home/writer
-touch home/writer/.history
-cd ../..
+mkdir -p bin boot dev etc home/writer proc sys tmp
+cd ..
+
+echo "Building dev datadisk.img..."
+truncate -s 1G datadisk.img
+sudo sfdisk datadisk.img <<EOF
+label: gpt
+type=L
+EOF
+
+sudo losetup --find --partscan datadisk.img
+sudo mkfs.ext4 /dev/loop0p1
+sudo losetup -d loop0
+cd ..
+
+echo "Done!"

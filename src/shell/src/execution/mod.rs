@@ -129,6 +129,7 @@ fn print_help_screen() {
         ("search", "Search for a string inside a file"),
         ("cd", "Change folder"),
         ("tuitext", "Text editor"),
+        ("fetch", "See system informations"),
         ("poweroff | exit", "Turn off the computer"),
         ("reboot", "Reboot the system"),
     ];
