@@ -21,12 +21,12 @@ fn main() {
     println!("OS: Typewriter OS");
     println!("Kernel: Linux {}", System::kernel_version().unwrap());
     println!(
-        "Memory: {} MB /{} MB",
+        "Memory: {} MB / {} MB",
         sys.used_memory() / B_TO_MB_DIVIDER,
         sys.total_memory() / B_TO_MB_DIVIDER
     );
     println!(
-        "Disk: {} MB /{} MB",
+        "Disk: {} MB / {} MB",
         used_disk.usage().total_written_bytes / B_TO_MB_DIVIDER,
         used_disk.total_space() / B_TO_MB_DIVIDER,
     )
