@@ -16,6 +16,7 @@ cp target/x86_64-unknown-linux-musl/release/new distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/rename distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/search distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/show distro/root/bin
+cp target/x86_64-unknown-linux-musl/release/fetch distro/root/bin
 cp target/x86_64-unknown-linux-musl/release/TuiText distro/root/bin/tuitext
 
 # Build and copy Linux kernel
@@ -32,7 +33,7 @@ cd ../..
 # Run the initramfs
 if [ $1 = "none" ]; then
     exit 0
-fi 
+fi
 if [ $1 = "term" ]; then
     qemu-system-x86_64 -kernel distro/vmlinuz-linux --nographic -append "console=ttyS0" -initrd distro/initramfz -drive file=distro/datadisk.img,format=raw
 else
